@@ -1,0 +1,172 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "_db: trashtv start",
+            "type": "shell",
+            "presentation": {
+                "reveal": "never",
+                "panel": "dedicated"
+            },
+            "command": "docker run --rm --name trashtv_postgres -p 5442:5432 -e POSTGRES_PASSWORD=postgres postgres:11.6-alpine"
+        },
+        {
+            "label": "db: stop all",
+            "type": "shell",
+            "presentation": {
+                "reveal": "silent"
+            },
+            "command": "docker stop trashtv_postgres"
+        },
+        {
+            "label": "db: start all",
+            "dependsOn": [
+                "_db: trashtv start",
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "_backend: install dependencies",
+            "type": "shell",
+            "command": "cd ${workspaceFolder}/backend && poetry install",
+            "presentation": {
+                "reveal": "silent"
+            }
+        },
+        {
+            "label": "_backend: poetry run dev",
+            "type": "shell",
+            "command": "cd ${workspaceFolder}/backend && poetry run python -X dev -m archigetter",
+            "presentation": {
+                "focus": true,
+                "panel": "dedicated"
+            },
+            "dependsOn": [
+                "_backend: install dependencies"
+            ]
+        },
+        {
+            "label": "backend: development initialize dummy data",
+            "type": "shell",
+            "command": "curl -X POST http://localhost:8001/initialize-dev-setup",
+            "presentation": {
+                "reveal": "silent"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "_backend: stop",
+            "type": "shell",
+            "command": "kill -s SIGQUIT $(pgrep -f \"\\-m archigetter\")",
+            "presentation": {
+                "reveal": "silent"
+            }
+        },
+        {
+            "label": "backend: development start",
+            "dependsOn": [
+                "db: start all",
+                "_backend: poetry run dev"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "backend: development stop",
+            "dependsOn": [
+                "db: stop all",
+                "_backend: stop"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "backend: test start required ressources",
+            "dependsOn": [
+                "db: start all",
+                "_backend: install dependencies"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "backend: test run tests",
+            "type": "shell",
+            "command": "cd ${workspaceFolder}/backend && poetry run pytest",
+            "presentation": {
+                "focus": true,
+                "panel": "dedicated"
+            }
+        },
+        {
+            "label": "backend: test stop required ressources",
+            "dependsOn": [
+                "db: stop all"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "_frontend: install dependencies",
+            "type": "shell",
+            "command": "cd ${workspaceFolder}/frontend && npm install",
+            "presentation": {
+                "reveal": "silent"
+            }
+        },
+        {
+            "label": "_frontend: npm run dev",
+            "type": "shell",
+            "command": "cd ${workspaceFolder}/frontend && export BASE_URL_API=http://localhost:8001 && npm run dev",
+            "presentation": {
+                "focus": true,
+                "panel": "dedicated"
+            },
+            "dependsOn": [
+                "_frontend: install dependencies"
+            ]
+        },
+        {
+            "label": "_frontend: stop",
+            "type": "shell",
+            "command": "kill -s SIGINT $(pgrep -f nuxt)",
+            "presentation": {
+                "reveal": "silent"
+            }
+        },
+        {
+            "label": "frontend: storybook start",
+            "type": "shell",
+            "command": "cd ${workspaceFolder}/frontend && npm run storybook",
+            "presentation": {
+                "focus": true,
+                "panel": "dedicated"
+            },
+            "dependsOn": [
+                "_frontend: install dependencies"
+            ]
+        },
+        {
+            "label": "frontend: storybook stop",
+            "type": "shell",
+            "command": "kill -s SIGQUIT $(pgrep -f storybook)",
+            "presentation": {
+                "reveal": "silent"
+            }
+        },
+        {
+            "label": "frontend: development start",
+            "dependsOn": [
+                "backend: development start",
+                "_frontend: npm run dev"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "frontend: development stop",
+            "dependsOn": [
+                "backend: development stop",
+                "_frontend: stop"
+            ],
+            "problemMatcher": []
+        }
+    ],
+}

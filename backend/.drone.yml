@@ -1,0 +1,24 @@
+kind: pipeline
+name: default
+
+steps:
+  - name: install
+    image: sidestream/python-poetry:3.9
+    commands:
+      - poetry install
+
+  - name: lint
+    image: sidestream/python-poetry:3.9
+    depends_on: [install]
+    commands:
+      - poetry run poe style:check
+
+  - name: test
+    image: sidestream/python-poetry:3.9
+    depends_on: [install]
+    commands:
+      - poetry run poe test
+
+trigger:
+  event:
+    - pull_request

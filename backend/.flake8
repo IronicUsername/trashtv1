@@ -1,0 +1,24 @@
+# Sadly, to this day, flake8 does not support the standard `pyproject.toml`
+# configuration file. See https://github.com/PyCQA/flake8/issues/234 for current
+# developments on this issue.
+[flake8]
+exclude =
+    __pycache__/
+    .venv/
+    .git/
+max-line-length = 119
+max-complexity = 15
+
+# for black compatability, read: https://black.readthedocs.io/en/stable/guides/using_black_with_other_tools.html#flake8
+# and for better flake8 bugbear line limiting, read: https://black.readthedocs.io/en/stable/the_black_code_style/current_style.html#line-length
+select = C,E,F,W,B,B950
+extend-ignore = E203, E303, E501
+
+# [darglint]
+# docstring linting integrated with `flake8`, see
+# here: https://github.com/terrencepreilly/darglint#flake8
+#
+# For documentation on strictness levels, see
+# here: https://github.com/terrencepreilly/darglint#strictness-configuration
+strictness=long
+docstring_style=numpy

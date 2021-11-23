@@ -1,0 +1,21 @@
+# deployment
+.env
+
+# development
+.vscode
+settings.json
+
+# Python
+*egg*
+__pycache__
+.pytest_cache
+.coverage
+.mypy_cache
+.python-version
+Pipfile
+
+# MacOS
+.DS_Store
+
+# Vim
+*.swp

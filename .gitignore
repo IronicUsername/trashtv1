@@ -1,0 +1,32 @@
+# deployment
+.env
+dist-backend
+dist-frontend
+dist
+
+# development
+# .vscode
+!.vscode/tasks.json
+settings.json
+vetur.config.js
+
+# Python
+*egg*
+__pycache__
+.pytest_cache
+.coverage
+.mypy_cache
+.python-version
+Pipfile
+.venv
+.venv_reporting_tool
+
+# MacOS
+.DS_Store
+
+# Vim
+*.swp
+
+# Excel
+*.xls
+*.xlsx

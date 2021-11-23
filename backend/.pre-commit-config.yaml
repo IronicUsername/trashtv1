@@ -1,0 +1,8 @@
+repos:
+- repo: local
+  hooks:
+    - id: poetry-run-poe-style-check
+      name: poetry-run-poe-style-check
+      entry: bash -c "echo 'To fix potential problems, run `poetry run poe style:fix`' && poetry run poe style:check"
+      language: system
+      require_serial: true
